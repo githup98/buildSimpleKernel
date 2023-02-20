@@ -167,12 +167,12 @@ gdt_descriptor:
 
 
 	[BITS 32]
-	load32:
+	load32:			;load kernel to memory
 		mov eax, 1  ; sector start read (skip sector 0, it is bootloader)
 		mov ecx, 100 ; number secttor wanna read
 		mov edi, 0x0100000 ; 1M (size want to load into)
 		call ata_lba_read
-		jmp CODE_SEG:0x0100000 ; 
+		jmp CODE_SEG:0x0100000 ; where the kernel is loaded into
 
 ata_lba_read:
 	mov ebx, eax ; backup lba
@@ -212,7 +212,7 @@ ata_lba_read:
 	;; finish sending 16 bits of LBA
 
 	mov dx, 0x1f7
-	mov al, 0x20
+	mov al, 0x20	; read sector command, 0x30 write sector with retry command
 	out dx, al
 
 .next_sector: ;reading all sector to memory

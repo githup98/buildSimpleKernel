@@ -1,5 +1,8 @@
 [BITS 32]
 global _start
+
+extern kernel_main  ; indecate that kernel_main will be define in c code
+
 CODE_SEG equ 0x8
 DATA_SEG equ 0x10
 
@@ -20,6 +23,9 @@ _start:
 	out 0x92, al	
 	;;
 
+	call kernel_main ; call c code
+
 	jmp $ ; do nothing (same as exit system call)
 
-
+times 512 - ($-$$) db 0   ; this line to ensure alignment due to, all data is put into
+						  ; each sector

@@ -1,5 +1,7 @@
-mkdir ./bin ./build
 #!/bin/bash
+if [[ ! -e "./bin" ]]; then 
+	mkdir ./bin ./build
+fi
 export PREFIX="$HOME/opt/cross"
 export TARGET=i686-elf
 export PATH="$PREFIX/bin:$PATH"
