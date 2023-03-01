@@ -1,9 +1,9 @@
 #ifndef KERNEL_H
 #define KERNEL_H
 
-#include "stddef.h"   // for size_t
+#include <stddef.h>   // for size_t
 
-#include "stdint.h"   // for uint16_t
+#include <stdint.h>   // for uint16_t
 
 
 #define HIGH 40

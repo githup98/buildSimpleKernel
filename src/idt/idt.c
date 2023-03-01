@@ -56,7 +56,7 @@ void idtInit()
 	//assign function to interrupt routine
 	////idtSet(0, idtZero);
 	
-	idtSet(0x20, int21h);
+	idtSet(0x21, int21h);
 	//load idt
 
 	idtLoad(&idtr_descriptor);

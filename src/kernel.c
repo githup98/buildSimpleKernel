@@ -1,6 +1,7 @@
 #include "kernel.h"
 #include "idt/idt.h"
 #include "io/io.h"
+#include "memory/heap/kheap.h"
 
 uint16_t* videoMem = 0;
 uint16_t row = 0;
@@ -71,8 +72,21 @@ void kernel_main()
 	printChar ('A',15);
 	print("hello\n world");
 
+	// init kernel heap
+	kheapInit();
+	
 	//init the interrupt descriptors tabel
 	idtInit();
 	//problem();
 	////outb(0x60, 0xff);  // out 1 byte to 0x60 port
+
+	void* ptr = kmalloc(50);
+	void* ptr2 = kmalloc(5000);
+	void* ptr3 = kmalloc(5600);
+	kfree(ptr);
+	void* ptr4 = kmalloc(50);
+	if(ptr || ptr2 || ptr3 || ptr4)
+	{
+		
+	}
 }

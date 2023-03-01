@@ -1,10 +1,12 @@
 FILES=./build/kernel.asm.o ./build/kernel.o ./build/idt/idt.asm.o \
-./build/idt/idt.o ./build/memory/memory.o ./build/io/io.asm.o
+./build/idt/idt.o ./build/memory/memory.o ./build/io/io.asm.o \
+./build/memory/heap/heap.o ./build/memory/heap/kheap.o
 
 INCLUDES = -I./src
+
 FLAGS = -g -ffreestanding -falign-jumps -falign-functions -falign-labels \
 -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions \
--Wno-unused-functions -fno-builtin -Werror -Wno-unused-label -Wno-cpp \
+-Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp \
 -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0 -Iinc
 
 all: ./bin/boot.bin ./bin/kernel.bin
@@ -42,7 +44,7 @@ all: ./bin/boot.bin ./bin/kernel.bin
 	# end of testing read a sector 
 ./build/kernel.o: ./src/kernel.c ./src/kernel.h
 	# $(INCLUDES) for include lines in kernel.c, "-c" is indecate that output is .o
-	i686-elf-gcc $(FLAGS) $(INCLDUES) -std=gnu99 -c ./src/kernel.c -o ./build/kernel.o
+	i686-elf-gcc $(FLAGS) $(INCLUDES) -std=gnu99 -c ./src/kernel.c -o ./build/kernel.o
 
 
 ./build/idt/idt.o: ./src/idt/idt.c 
@@ -50,7 +52,14 @@ all: ./bin/boot.bin ./bin/kernel.bin
 
 
 ./build/memory/memory.o: ./src/memory/memory.c
-	i686-elf-gcc $(FLAGS) $(INCLDUES) -std=gnu99 -c ./src/memory/memory.c -o ./build/memory/memory.o
+	i686-elf-gcc $(FLAGS) $(INCLUDES) -std=gnu99 -c ./src/memory/memory.c -o ./build/memory/memory.o
+
+./build/memory/heap/heap.o: ./src/memory/heap/heap.c
+	i686-elf-gcc $(INCLUDES) -I./src/memory/heap $(FLAGS) -std=gnu99 -c ./src/memory/heap/heap.c -o ./build/memory/heap/heap.o
+
+./build/memory/heap/kheap.o: ./src/memory/heap/kheap.c
+	i686-elf-gcc $(INCLUDES)  -I./src/memory/heap $(FLAGS)  -std=gnu99 -c ./src/memory/heap/kheap.c -o ./build/memory/heap/kheap.o
+
 
 clean:
 	rm -f ./bin/boot.bin
@@ -61,4 +70,5 @@ clean:
 	rm -f ./build/kernelFull.o
 	rm -f ./bin/kernel.bin
 	rm -f ./build/kernel.o
-	rm -f ./build/memory/*
+	rm -f ./build/memory/memory.o
+	rm -f ./build/memory/heap/*
