@@ -1,6 +1,7 @@
 FILES=./build/kernel.asm.o ./build/kernel.o ./build/idt/idt.asm.o \
 ./build/idt/idt.o ./build/memory/memory.o ./build/io/io.asm.o \
-./build/memory/heap/heap.o ./build/memory/heap/kheap.o
+./build/memory/heap/heap.o ./build/memory/heap/kheap.o ./build/memory/paging/paging.o \
+./build/memory/paging/paging.asm.o
 
 INCLUDES = -I./src
 
@@ -42,6 +43,12 @@ all: ./bin/boot.bin ./bin/kernel.bin
 	#dd if=/dev/zero bs=512 count=1 >> ./boot.bin
 	
 	# end of testing read a sector 
+
+
+
+./build/memory/paging/paging.asm.o: ./src/memory/paging/paging.asm
+	nasm -f elf -g ./src/memory/paging/paging.asm -o ./build/memory/paging/paging.asm.o
+
 ./build/kernel.o: ./src/kernel.c ./src/kernel.h
 	# $(INCLUDES) for include lines in kernel.c, "-c" is indecate that output is .o
 	i686-elf-gcc $(FLAGS) $(INCLUDES) -std=gnu99 -c ./src/kernel.c -o ./build/kernel.o
@@ -61,6 +68,8 @@ all: ./bin/boot.bin ./bin/kernel.bin
 	i686-elf-gcc $(INCLUDES)  -I./src/memory/heap $(FLAGS)  -std=gnu99 -c ./src/memory/heap/kheap.c -o ./build/memory/heap/kheap.o
 
 
+./build/memory/paging/paging.o: ./src/memory/paging/paging.c
+	i686-elf-gcc $(INCLUDES)  -I./src/memory/paging $(FLAGS)  -std=gnu99 -c ./src/memory/paging/paging.c -o ./build/memory/paging/paging.o
 clean:
 	rm -f ./bin/boot.bin
 	rm -f ./bin/os.bin
@@ -72,3 +81,4 @@ clean:
 	rm -f ./build/kernel.o
 	rm -f ./build/memory/memory.o
 	rm -f ./build/memory/heap/*
+	rm -f ./build/memory/paging/*

@@ -2,6 +2,7 @@
 #include "idt/idt.h"
 #include "io/io.h"
 #include "memory/heap/kheap.h"
+#include "memory/paging/paging.h"
 
 uint16_t* videoMem = 0;
 uint16_t row = 0;
@@ -65,7 +66,7 @@ void print(const char* str)
 	}
 }
 
-
+static struct paging4gbChunk *kernelChunk = 0;
 void kernel_main()
 {
 	terminalInit();
@@ -76,17 +77,30 @@ void kernel_main()
 	kheapInit();
 	
 	//init the interrupt descriptors tabel
+
 	idtInit();
 	//problem();
 	////outb(0x60, 0xff);  // out 1 byte to 0x60 port
+	
+	//set up page
+	kernelChunk = pagingNew4gb(PAGING_IS_PRESENT | PAGING_IS_WRITEABLE | PAGING_ACCESS_FROM_ALL); 
+	
+	//load page
+	pagingSwitch(paging4gbChunkGetDirectory(kernelChunk));
 
-	void* ptr = kmalloc(50);
-	void* ptr2 = kmalloc(5000);
-	void* ptr3 = kmalloc(5600);
-	kfree(ptr);
-	void* ptr4 = kmalloc(50);
-	if(ptr || ptr2 || ptr3 || ptr4)
-	{
-		
-	}
+	// map kernelChunk to kzalloc (which func return physical address)
+	char* ptr = kzalloc(4096); //ptr will point to 0x1000
+
+	pageSet(paging4gbChunkGetDirectory(kernelChunk),(void*)0x1000, (uint32_t)ptr | PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL | PAGING_IS_WRITEABLE);
+
+	// enable page
+	enablePage();
+	
+	//create test
+	char* ptr2 = (char*) 0x1000;
+	ptr2[0] = 'T';
+	ptr2[1] = 'D';
+	print(ptr2);
+	print(ptr);
+	enableInt();
 }

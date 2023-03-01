@@ -7,6 +7,10 @@ global noInterrupt
 extern noInterruptHandler
 
 
+global disableInt
+global enableInt
+
+
 idtLoad:
 	;; interact with stack point on stack frame	
 	push ebp ; store previous stack base pointeri of stack frame
@@ -33,3 +37,12 @@ noInterrupt:
 	popad
 	sti
 	iret
+
+
+disableInt:
+	cli
+	ret
+
+enableInt:
+	sti
+	ret

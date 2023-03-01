@@ -21,4 +21,8 @@ struct idtr_desc   // create idt register desc
 
 }__attribute__((packed));
 extern void idtInit();
+
+void enableInt();
+void disableInt();
+
 #endif
