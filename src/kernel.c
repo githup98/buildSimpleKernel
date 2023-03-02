@@ -4,21 +4,13 @@
 #include "memory/heap/kheap.h"
 #include "memory/paging/paging.h"
 #include "disk/disk.h"
+#include "string/string.h"
 
+#include "fs/pParser.h"
 
 uint16_t* videoMem = 0;
 uint16_t row = 0;
 uint8_t col = 0;
-size_t strlen(const char* str)
-{
-	size_t len = 0;
-	while(str[len])
-	{
-		len ++;
-	}
-	return len;
-}
-
 
 void terminalInit()
 {
@@ -106,4 +98,9 @@ void kernel_main()
 
 	// enable interrupt
 	enableInt();
+
+	struct pathRoot* root;
+	const char* filename = "0:/test/insert/shell.exe";
+	root = pathParserParser(filename, NULL);
+	pathParserFree(root);
 }

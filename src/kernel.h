@@ -9,6 +9,8 @@
 #define HIGH 40
 #define WIDTH 80
 
+#define TDOS_MAX_PATH 108
+
 void kernel_main();
 void print(const char* str);
 extern void problem();
