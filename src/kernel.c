@@ -5,8 +5,10 @@
 #include "memory/paging/paging.h"
 #include "disk/disk.h"
 #include "string/string.h"
-
 #include "fs/pParser.h"
+#include "disk/streamer.h"
+#include "config.h"
+
 
 uint16_t* videoMem = 0;
 uint16_t row = 0;
@@ -92,15 +94,13 @@ void kernel_main()
 	// enable page
 	enablePage();
 
-	//read secttor
-	char buf[512];
-	diskReadBlock(diskGet(0), 0, 1, buf);
-
 	// enable interrupt
 	enableInt();
 
-	struct pathRoot* root;
-	const char* filename = "0:/test/insert/shell.exe";
-	root = pathParserParser(filename, NULL);
-	pathParserFree(root);
+
+	unsigned char c = 0;
+	struct diskStream* stream = diskStreamNew(0);
+	diskStreamSeek(stream, 0x211); //use bless to check
+	diskStreamRead(stream, &c, 1);
+	diskStreamClose(stream);
 }
