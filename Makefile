@@ -1,7 +1,7 @@
 FILES=./build/kernel.asm.o ./build/kernel.o ./build/idt/idt.asm.o \
 ./build/idt/idt.o ./build/memory/memory.o ./build/io/io.asm.o \
 ./build/memory/heap/heap.o ./build/memory/heap/kheap.o ./build/memory/paging/paging.o \
-./build/memory/paging/paging.asm.o
+./build/memory/paging/paging.asm.o ./build/disk/disk.o
 
 INCLUDES = -I./src
 
@@ -70,15 +70,15 @@ all: ./bin/boot.bin ./bin/kernel.bin
 
 ./build/memory/paging/paging.o: ./src/memory/paging/paging.c
 	i686-elf-gcc $(INCLUDES)  -I./src/memory/paging $(FLAGS)  -std=gnu99 -c ./src/memory/paging/paging.c -o ./build/memory/paging/paging.o
+
+
+./build/disk/disk.o: ./src/disk/disk.c
+	i686-elf-gcc $(INCLUDES)  -I./src/disk $(FLAGS)  -std=gnu99 -c ./src/disk/disk.c -o ./build/disk/disk.o
+
+
 clean:
 	rm -f ./bin/boot.bin
 	rm -f ./bin/os.bin
-	rm -f ./build/kernel.asm.o
-	rm -f ./build/idt/*
-	rm -f ./build/io/*
 	rm -f ./build/kernelFull.o
 	rm -f ./bin/kernel.bin
-	rm -f ./build/kernel.o
-	rm -f ./build/memory/memory.o
-	rm -f ./build/memory/heap/*
-	rm -f ./build/memory/paging/*
+	rm -f $(FILES)

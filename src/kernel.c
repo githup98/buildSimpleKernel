@@ -3,6 +3,8 @@
 #include "io/io.h"
 #include "memory/heap/kheap.h"
 #include "memory/paging/paging.h"
+#include "disk/disk.h"
+
 
 uint16_t* videoMem = 0;
 uint16_t row = 0;
@@ -76,8 +78,10 @@ void kernel_main()
 	// init kernel heap
 	kheapInit();
 	
-	//init the interrupt descriptors tabel
+	//search and init primary disk (0)
+	diskSearchAndInit();
 
+	//init the interrupt descriptors tabel
 	idtInit();
 	//problem();
 	////outb(0x60, 0xff);  // out 1 byte to 0x60 port
@@ -95,12 +99,11 @@ void kernel_main()
 
 	// enable page
 	enablePage();
-	
-	//create test
-	char* ptr2 = (char*) 0x1000;
-	ptr2[0] = 'T';
-	ptr2[1] = 'D';
-	print(ptr2);
-	print(ptr);
+
+	//read secttor
+	char buf[512];
+	diskReadBlock(diskGet(0), 0, 1, buf);
+
+	// enable interrupt
 	enableInt();
 }

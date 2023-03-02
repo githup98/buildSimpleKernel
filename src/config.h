@@ -12,4 +12,7 @@
 
 //check osdev memory map
 #define TD_OS_HEAP_TABLE_ADDRESS 0x00007E00 //to 7eff 480.5 kb enough for 25600 entries
+
+#define TDOS_SECTOR_SIZE   512
+
 #endif

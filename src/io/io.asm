@@ -11,7 +11,7 @@ insb:
 
 	xor eax, eax  ; due to eax alway return the value
 
-	mov edx, [ebp + 8]
+	mov edx, [ebp+8]
 
 	in al, dx
 
@@ -24,7 +24,7 @@ insw:
 
 	xor eax, eax  ; due to eax alway return the value
 
-	mov edx, [ebp+12]
+	mov edx, [ebp+8]
 
 	in ax, dx
 
