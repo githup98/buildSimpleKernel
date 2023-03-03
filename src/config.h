@@ -15,4 +15,8 @@
 
 #define TDOS_SECTOR_SIZE   512
 
+#define TDOS_MAX_FILESYSTEM 12
+#define TDOS_MAX_FILE_DESCRIPTORS 512
+
+
 #endif

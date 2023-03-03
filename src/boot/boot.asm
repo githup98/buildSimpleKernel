@@ -20,11 +20,34 @@ BITS 16   ;; tell to assembler that it use 16-bit architecture
 ;; interrupt is a subroutine, 
 
 
-_start:
-	jmp short start
-	nop
+jmp short start
+nop
 
-	times 33 db 0
+; FAT Header (Fast allocation table - FAT)
+OEMIdentifier         db 'TRUCDOOS' ;; 8 bytes
+BytesPerSector        dw 0x200      ;; 512 bytes
+SectorsPerCluster     db 0x80
+ReservedSectors       dw 200        ;; store all our kernel
+FATCopies             db 0x02       ;; FAT and one backup
+RootDirEntries        dw 0x40
+NumSectors            dw 0x00
+MediaType             db 0xF8
+SectorsPerFAT         dw 0x100
+SectorsPerTrack       dw 0x20
+NumberOfHeads         dw 0x40
+HiddenSectors         dd 0x00
+SectorsBig            dd 0x773594
+
+;Extend head (BPB 4.0) //BIOS parameter block
+
+DriveNumber           db 0x80
+WinNTBit              db 0x00
+Signature             db 0x29
+VolumeID              dd 0xD105
+VolumeIDString        db 'TRUCDO BOOT' ;;11 bytes  
+SystemIDString        db 'FAT16   '    ;; 8 bytes
+
+
 start:
 
 	;jmp 0x7c0:step2

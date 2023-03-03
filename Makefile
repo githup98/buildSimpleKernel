@@ -2,7 +2,7 @@ FILES=./build/kernel.asm.o ./build/kernel.o ./build/idt/idt.asm.o \
 ./build/idt/idt.o ./build/memory/memory.o ./build/io/io.asm.o \
 ./build/memory/heap/heap.o ./build/memory/heap/kheap.o ./build/memory/paging/paging.o \
 ./build/memory/paging/paging.asm.o ./build/disk/disk.o ./build/string/string.o \
-./build/fs/pParser.o ./build/disk/streamer.o
+./build/fs/pParser.o ./build/disk/streamer.o ./build/fs/file.o
 
 INCLUDES = -I./src
 
@@ -15,8 +15,15 @@ all: ./bin/boot.bin ./bin/kernel.bin
 	rm -f ./bin/os.bin
 	dd if=./bin/boot.bin >> ./bin/os.bin
 	dd if=./bin/kernel.bin >> ./bin/os.bin
-	# kenel size may be lagre
-	dd if=/dev/zero bs=512 count=100 >> ./bin/os.bin
+	# kenel size may be lagre, bs = 1 MB (1048576)
+	dd if=/dev/zero bs=1048576 count=16 >> ./bin/os.bin
+	
+	# mount to system
+	sudo mount -t vfat ./bin/os.bin /mnt/d
+	# copy a file over
+	sudo cp ./helloWorld.txt /mnt/d
+	sudo umount /mnt/d
+
 
 ./bin/kernel.bin: $(FILES)
 	i686-elf-ld -g -relocatable $(FILES) -o ./build/kernelFull.o
@@ -80,8 +87,10 @@ all: ./bin/boot.bin ./bin/kernel.bin
 	i686-elf-gcc $(INCLUDES)  -I./src/string $(FLAGS)  -std=gnu99 -c ./src/string/string.c -o ./build/string/string.o
 
 ./build/fs/pParser.o: ./src/fs/pParser.c
-	i686-elf-gcc $(INCLUDES)  -I./src/disk $(FLAGS)  -std=gnu99 -c ./src/fs/pParser.c -o ./build/fs/pParser.o
+	i686-elf-gcc $(INCLUDES)  -I./src/fs $(FLAGS)  -std=gnu99 -c ./src/fs/pParser.c -o ./build/fs/pParser.o
 
+./build/fs/file.o: ./src/fs/file.c
+	i686-elf-gcc $(INCLUDES)  -I./src/fs $(FLAGS)  -std=gnu99 -c ./src/fs/file.c -o ./build/fs/file.o
 
 ./build/disk/streamer.o: ./src/disk/streamer.c
 	i686-elf-gcc $(INCLUDES)  -I./src/disk $(FLAGS)  -std=gnu99 -c ./src/disk/streamer.c -o ./build/disk/streamer.o

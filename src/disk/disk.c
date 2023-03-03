@@ -41,6 +41,7 @@ void diskSearchAndInit()
 	memset(&disk, 0, sizeof(disk));
 	disk.type = TDOS_DISK_TYPE_REAL;
 	disk.sectorSize = TDOS_SECTOR_SIZE;
+	disk.filesystem = fsResolve(&disk);
 }
 
 struct disk* diskGet(int index)
